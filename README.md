@@ -15,7 +15,7 @@ Mi raccomando di modificare l'indirizzo di posta con il tuo.
 come da commento, ricordarsi di modificare i place holder tra [] alle righe 3,4,16,30.
 
 ** spamsenzapassaredalvia
-Anche qui ci sono da modificare i place holder.
+Anche qui ci sono da modificare i place holder tra [] alle righe 4 e 14.
 
 
 * Spam per siti di vendita
