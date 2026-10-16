@@ -1,0 +1,45 @@
+function loggaEmailSenzaPunto() {
+      //inserire ID degl Google Sheet e nome del foglio
+  var spreadsheetId = '[inserire_ID_del_Google_Sheet_dove_loggare_mail_trovate]';
+  var sheetName = '[inserire_nome_del_foglio_in_cui_scrivere]';
+  
+  var ss = SpreadsheetApp.openById(spreadsheetId);
+  var sheet = ss.getSheetByName(sheetName);
+  
+  var lastRow = sheet.getLastRow();
+  var loggedIds = [];
+  if (lastRow > 1) {
+    loggedIds = sheet.getRange(2, 2, lastRow - 1, 1).getValues().flat();
+  }
+
+      //inserire prima parte di email
+  var query = 'to:[nomecognome]@gmail.com -to:[nome.cognome]@gmail.com in:anywhere';
+  var threads = GmailApp.search(query, 0, 50);
+  
+  var labelName = 'Controllo-SenzaPunto';
+  var label = GmailApp.getUserLabelByName(labelName) || GmailApp.createLabel(labelName);
+
+  for (var i = 0; i < threads.length; i++) {
+    var messages = threads[i].getMessages();
+    for (var j = 0; j < messages.length; j++) {
+      var msg = messages[j];
+      var msgId = msg.getId();
+      var toHeader = msg.getTo();
+
+      //inserire prima parte di email
+      if (toHeader.indexOf('[nomecognome]@gmail.com') !== -1) {
+        threads[i].addLabel(label);
+
+        if (loggedIds.indexOf(msgId) === -1) {
+          var date = msg.getDate();
+          var from = msg.getFrom();
+          var subject = msg.getSubject();
+
+          // Scrive solo i dati sicuri ed essenziali
+          sheet.appendRow([date, msgId, from, toHeader, subject]);
+          loggedIds.push(msgId);
+        }
+      }
+    }
+  }
+}
